@@ -1,0 +1,49 @@
+#include "rps.h"
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
+#include <algorithm>
+
+using namespace std;
+
+// Function to get the computer's choice (rock, paper, or scissors)
+std::string getComputerChoice() {
+    int num = rand() % 3 + 1; // Generate a random number (1 to 3)
+    switch (num) {
+        case 1: return "rock";
+        case 2: return "paper";
+        case 3: return "scissors";
+        default: return "rock"; // Fallback (shouldn't happen)
+    }
+}
+
+// Function to get the user's choice (rock, paper, or scissors)
+std::string getUserChoice() {
+    string choice;
+    while (true) {
+        cout << "Enter your choice (rock, paper, scissors): ";
+        getline(cin, choice); // Read the user's choice
+        transform(choice.begin(), choice.end(), choice.begin(), ::tolower); // Convert to lowercase
+
+        if (choice == "rock" || choice == "paper" || choice == "scissors") {
+            return choice; // Valid input, return the choice
+        } else {
+            cout << "Invalid input. Please enter rock, paper, or scissors.\n"; // Handle invalid input
+        }
+    }
+}
+
+// Function to determine the winner based on the choices
+std::string determineWinner(std::string userChoice, std::string computerChoice) {
+    if (userChoice == computerChoice) {
+        return "tie"; // If both choices are the same, it's a tie
+    }
+
+    if ((userChoice == "rock" && computerChoice == "scissors") ||
+        (userChoice == "scissors" && computerChoice == "paper") ||
+        (userChoice == "paper" && computerChoice == "rock")) {
+        return "User"; // User wins
+    } else {
+        return "Computer"; // Computer wins
+    }
+}
