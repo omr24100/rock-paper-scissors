@@ -8,10 +8,10 @@ Requirements: Write a program that makes a game of rock, paper, scissors.
 */
 
 #include <iostream>
-#include <cstdlib>  
-#include <ctime>    
 #include <string>
-#include <algorithm> 
+#include <ctime>
+#include <cstdlib>
+#include <algorithm>
 
 using namespace std;
 
@@ -20,33 +20,58 @@ string getComputerChoice();
 string getUserChoice();
 string determineWinner(string userChoice, string computerChoice);
 
+
 int main() {
     srand(static_cast<unsigned int>(time(0))); 
 
-    string userChoice, computerChoice, result;
+    string playerName;
+    cout << "Enter your name: ";
+    getline(cin, playerName); 
 
-    do {
-        computerChoice = getComputerChoice();
-        userChoice = getUserChoice();
+    int userWins = 0;
+    string playAgain = "yes";
+
+    while (playAgain == "yes" || playAgain == "y") {
+        string userChoice = getUserChoice();
+        string computerChoice = getComputerChoice();
 
         cout << "Computer chose: " << computerChoice << endl;
 
-        result = determineWinner(userChoice, computerChoice);
+        string winner = determineWinner(userChoice, computerChoice);
 
-        if (result == "tie") {
-            cout << "It's a tie! Let's play again.\n" << endl;
+        
+        while (winner == "tie") {
+            cout << "It's a tie! Let's try again...\n" << endl;
+            userChoice = getUserChoice();
+            computerChoice = getComputerChoice();
+            cout << "Computer chose: " << computerChoice << endl;
+            winner = determineWinner(userChoice, computerChoice);
         }
-    } while (result == "tie");
 
-    cout << result << " wins the game!" << endl;
+        if (winner == "User") {
+            cout << playerName << " wins this round!" << endl;
+            userWins++;
+        }
+        else {
+            cout << "Computer wins this round!" << endl;
+        }
+
+        cout << "\nDo you want to play again? (yes/no): ";
+        getline(cin, playAgain);
+        transform(playAgain.begin(), playAgain.end(), playAgain.begin(), ::tolower);
+        cout << endl;
+    }
+
+    cout << "Thanks for playing, " << playerName << "!" << endl;
+    cout << "You won a total of " << userWins << " time(s)." << endl;
 
     return 0;
 }
 
 
+
 string getComputerChoice() {
     int num = rand() % 3 + 1;
-
     switch (num) {
     case 1: return "rock";
     case 2: return "paper";
@@ -55,14 +80,11 @@ string getComputerChoice() {
     }
 }
 
-
 string getUserChoice() {
     string choice;
     while (true) {
         cout << "Enter your choice (rock, paper, scissors): ";
-        cin >> choice;
-
-       
+        getline(cin, choice);
         transform(choice.begin(), choice.end(), choice.begin(), ::tolower);
 
         if (choice == "rock" || choice == "paper" || choice == "scissors") {
@@ -73,7 +95,6 @@ string getUserChoice() {
         }
     }
 }
-
 
 string determineWinner(string userChoice, string computerChoice) {
     if (userChoice == computerChoice) {
