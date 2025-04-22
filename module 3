@@ -1,0 +1,29 @@
+#include <iostream>
+#include <ctime>
+#include <cstdlib>
+#include "rps.h"
+
+using namespace std;
+
+int main() {
+    srand(static_cast<unsigned int>(time(0))); // Seed random number generator
+
+    string userChoice, computerChoice, result;
+
+    do {
+        computerChoice = getComputerChoice();
+        userChoice = getUserChoice();
+
+        cout << "Computer chose: " << computerChoice << endl;
+
+        result = determineWinner(userChoice, computerChoice);
+
+        if (result == "tie") {
+            cout << "It's a tie! Let's play again.\n" << endl;
+        }
+    } while (result == "tie");
+
+    cout << result << " wins the game!" << endl;
+
+    return 0;
+}
