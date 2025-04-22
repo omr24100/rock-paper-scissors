@@ -1,0 +1,15 @@
+#ifndef RPS_H
+#define RPS_H
+
+#include <string>
+
+// Function to get the computer's choice (rock, paper, or scissors)
+std::string getComputerChoice();
+
+// Function to get the user's choice (rock, paper, or scissors)
+std::string getUserChoice();
+
+// Function to determine the winner based on the user's and computer's choices
+std::string determineWinner(std::string userChoice, std::string computerChoice);
+
+#endif
