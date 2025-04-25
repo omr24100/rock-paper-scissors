@@ -1,29 +1,47 @@
+#include "scores.h"
+#include <fstream>
 #include <iostream>
-#include <ctime>
-#include <cstdlib>
-#include "rps.h"
 
 using namespace std;
 
-int main() {
-    srand(static_cast<unsigned int>(time(0))); // Seed random number generator
+const string SCORE_FILE = "scores.txt";
 
-    string userChoice, computerChoice, result;
+void loadScores(map<string, int>& scores) {
+    ifstream file(SCORE_FILE);
+    string name;
+    int score;
 
-    do {
-        computerChoice = getComputerChoice();
-        userChoice = getUserChoice();
-
-        cout << "Computer chose: " << computerChoice << endl;
-
-        result = determineWinner(userChoice, computerChoice);
-
-        if (result == "tie") {
-            cout << "It's a tie! Let's play again.\n" << endl;
-        }
-    } while (result == "tie");
-
-    cout << result << " wins the game!" << endl;
-
-    return 0;
+    while (file >> name >> score) {
+        scores[name] = score;
+    }
+    file.close();
 }
+
+void saveScores(const map<string, int>& scores) {
+    ofstream file(SCORE_FILE);
+    for (const auto& pair : scores) {
+        file << pair.first << " " << pair.second << endl;
+    }
+    file.close();
+}
+
+void showScores() {
+    map<string, int> scores;
+    loadScores(scores);
+
+    if (scores.empty()) {
+        cout << "No scores recorded yet.\n";
+    } else {
+        cout << "\n-- Previous Scores --\n";
+        for (const auto& pair : scores) {
+            cout << pair.first << ": " << pair.second << " win(s)" << endl;
+        }
+    }
+}
+
+void deleteScores() {
+    ofstream file(SCORE_FILE, ios::trunc);
+    file.close();
+    cout << "All scores have been deleted.\n";
+}
+
