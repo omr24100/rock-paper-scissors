@@ -1,52 +1,56 @@
-#include "rps.h"
+#include "game.h"
+#include "utils.h"
+#include "scores.h"
 #include <iostream>
-#include <cstdlib>
-#include <ctime>
 #include <algorithm>
+#include <string>
 
 using namespace std;
 
-// Generate a random computer choice
-string getComputerChoice() {
-    int num = rand() % 3 + 1;
+void playGame(map<string, int>& scores) {
+    string playerName;
+    string doAgain = "yes";
+    int winCount = 0;
 
-    switch (num) {
-        case 1: return "rock";
-        case 2: return "paper";
-        case 3: return "scissors";
-        default: return "rock"; // Fallback
-    }
-}
+    cout << "Enter your name: ";
+    cin >> playerName;
+    transform(playerName.begin(), playerName.end(), playerName.begin(), ::tolower);
 
-// Prompt user and validate input
-string getUserChoice() {
-    string choice;
-    while (true) {
-        cout << "Enter your choice (rock, paper, scissors): ";
-        cin >> choice;
+    while (doAgain != "no") {
+        string userChoice;
+        cout << "\n" << playerName << ", enter your choice (rock, paper, or scissors): ";
+        cin >> userChoice;
+        transform(userChoice.begin(), userChoice.end(), userChoice.begin(), ::tolower);
 
-        // Convert to lowercase
-        transform(choice.begin(), choice.end(), choice.begin(), ::tolower);
-
-        if (choice == "rock" || choice == "paper" || choice == "scissors") {
-            return choice;
-        } else {
-            cout << "Invalid input. Try again.\n";
+        if (userChoice != "rock" && userChoice != "paper" && userChoice != "scissors") {
+            cout << "Invalid input. Try again." << endl;
+            continue;
         }
-    }
-}
 
-// Determine who wins
-string determineWinner(string userChoice, string computerChoice) {
-    if (userChoice == computerChoice) {
-        return "tie";
+        string computerChoice = getComputerChoice();
+        cout << "Computer chose: " << computerChoice << endl;
+
+        string result = determineWinner(userChoice, computerChoice);
+        cout << result << endl;
+
+        if (result == "You win!") {
+            winCount++;
+        }
+
+        cout << "Do you want to play again? (yes/no): ";
+        cin >> doAgain;
+        transform(doAgain.begin(), doAgain.end(), doAgain.begin(), ::tolower);
     }
 
-    if ((userChoice == "rock" && computerChoice == "scissors") ||
-        (userChoice == "scissors" && computerChoice == "paper") ||
-        (userChoice == "paper" && computerChoice == "rock")) {
-        return "User";
+    cout << "\nThanks for playing, " << playerName << "! You won " << winCount << " time(s)." << endl;
+
+    if (scores[playerName] < winCount) {
+        scores[playerName] = winCount;
+        cout << "New high score saved!\n";
     } else {
-        return "Computer";
+        cout << "You didn't beat your best score of " << scores[playerName] << ".\n";
     }
+
+    saveScores(scores);
 }
+
