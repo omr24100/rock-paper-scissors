@@ -3,92 +3,82 @@
 /*
 File Name: Rock, paper, scissors
 Programmer: Olivia Ruiz
-Date: 4/22/25
+Date: 4/25/25
 Requirements: Write a program that makes a game of rock, paper, scissors. 
 */
-
 #include <iostream>
-#include <cstdlib>  
-#include <ctime>    
+#include <cstdlib>
+#include <ctime>
 #include <string>
-#include <algorithm> 
+#include <algorithm> // For transform()
 
 using namespace std;
 
+string getComputerChoice() {
+    int choice = rand() % 3;
+    switch (choice) {
+        case 0: return "rock";
+        case 1: return "paper";
+        default: return "scissors";
+    }
+}
 
-string getComputerChoice();
-string getUserChoice();
-string determineWinner(string userChoice, string computerChoice);
+string determineWinner(string userChoice, string computerChoice) {
+    if (userChoice == computerChoice) return "It's a tie!";
+    if ((userChoice == "rock" && computerChoice == "scissors") ||
+        (userChoice == "paper" && computerChoice == "rock") ||
+        (userChoice == "scissors" && computerChoice == "paper")) {
+        return "You win!";
+    } else {
+        return "Computer wins!";
+    }
+}
 
 int main() {
-    srand(static_cast<unsigned int>(time(0))); 
+    srand(time(0)); 
+    string playerName;
+    string doAgain = "yes";
+    int winCount = 0;
 
-    string userChoice, computerChoice, result;
+    cout << "Welcome to Rock, Paper, Scissors!" << endl;
+    cout << "Enter your name: ";
+    getline(cin, playerName);
 
-    do {
-        computerChoice = getComputerChoice();
-        userChoice = getUserChoice();
+    while (doAgain != "no") {
+        string userChoice;
+        cout << "\n" << playerName << ", enter your choice (rock, paper, or scissors): ";
+        cin >> userChoice;
 
+     
+        transform(userChoice.begin(), userChoice.end(), userChoice.begin(), ::tolower);
+
+        // Input validation
+        if (userChoice != "rock" && userChoice != "paper" && userChoice != "scissors") {
+            cout << "Invalid input. Try again." << endl;
+            continue;
+        }
+
+        string computerChoice = getComputerChoice();
         cout << "Computer chose: " << computerChoice << endl;
 
-        result = determineWinner(userChoice, computerChoice);
+        string result = determineWinner(userChoice, computerChoice);
+        cout << result << endl;
 
-        if (result == "tie") {
-            cout << "It's a tie! Let's play again.\n" << endl;
+        if (result == "You win!") {
+            winCount++;
         }
-    } while (result == "tie");
 
-    cout << result << " wins the game!" << endl;
+        cout << "Do you want to play again? (yes/no): ";
+        cin >> doAgain;
+        transform(doAgain.begin(), doAgain.end(), doAgain.begin(), ::tolower);
+    }
+
+    cout << "\nThanks for playing, " << playerName << "! You won " << winCount << " time(s)." << endl;
 
     return 0;
 }
 
 
-string getComputerChoice() {
-    int num = rand() % 3 + 1;
-
-    switch (num) {
-    case 1: return "rock";
-    case 2: return "paper";
-    case 3: return "scissors";
-    default: return "rock"; 
-    }
-}
-
-
-string getUserChoice() {
-    string choice;
-    while (true) {
-        cout << "Enter your choice (rock, paper, scissors): ";
-        cin >> choice;
-
-       
-        transform(choice.begin(), choice.end(), choice.begin(), ::tolower);
-
-        if (choice == "rock" || choice == "paper" || choice == "scissors") {
-            return choice;
-        }
-        else {
-            cout << "Invalid input. Please enter rock, paper, or scissors.\n";
-        }
-    }
-}
-
-
-string determineWinner(string userChoice, string computerChoice) {
-    if (userChoice == computerChoice) {
-        return "tie";
-    }
-
-    if ((userChoice == "rock" && computerChoice == "scissors") ||
-        (userChoice == "scissors" && computerChoice == "paper") ||
-        (userChoice == "paper" && computerChoice == "rock")) {
-        return "User";
-    }
-    else {
-        return "Computer";
-    }
-}
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
 // Debug program: F5 or Debug > Start Debugging menu
